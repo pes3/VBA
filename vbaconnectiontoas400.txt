@@ -1,0 +1,73 @@
+    Sub RP4_13_rep()
+    '(p) resources https://www.ibm.com/support/knowledgecenter/SSEQ5Y_5.9.0/com.ibm.pcomm.doc/books/pdf/pceclV56.pdf
+    Set sch_main = ThisWorkbook.Sheets("setup") '(p) - variable set to name of sheet
+    ses = sch_main.Range("G1") ' (p) - variable set to what session of JBA
+    
+    Dim ps
+    Set ps = CreateObject("PCOMM.autECLPS") '(p)initally set connection for the object you create
+    Set ia = CreateObject("PCOMM.autECLOIA") ' (p) The autECLOIA object allows you to access the methods contained in the PCOMM.autECLOIA class
+    
+    ps.SetConnectionByName (ses) '(p) initialize your object
+    ia.SetConnectionByName (ses)
+    ps.autECLFieldList.Refresh '(p)autECLFieldList performs operations on fields in an emulator presentation space
+    ia.WaitForInputReady (2000) ' The WaitForInputReady method waits until the OIA of the connection associated with the autECLOIA object indicates that the connection is able to accept keyboard input.
+    
+    'report period
+    maildd = "email@email.COM"
+    y = sch_main.Range("A5") ' (p) looking in excel for date ranges
+    m = sch_main.Range("A6") ' (p) looking in excel for date ranges
+    date_from = Format(DateSerial(y, m, 1), "mmddyy")
+    date_to = Format(DateSerial(y, m + 1, 1) - 1, "mmddyy")
+    
+    
+    last_client = sch_main.Range("a1").End(xlDown).Row 'finding last row
+    i = 2 'position of first row
+             
+        
+    While i <= last_client
+        client = sch_main.Range("A" & i)
+        ps.SendKeys "test", 21, 11
+        ps.SendKeys "[enter]"
+        ia.WaitForInputReady (2000)
+    
+    'clear fields
+        ps.SendKeys "[field+]", 5, 19
+        ia.WaitForInputReady (2000)
+        ps.SendKeys "[field+]", 9, 24
+        ia.WaitForInputReady (2000)
+        ps.SendKeys "[field+]", 9, 36
+        ia.WaitForInputReady (2000)
+        ps.SendKeys "[field+]", 15, 19
+        ia.WaitForInputReady (2000)
+        ps.SendKeys "[field+]", 18, 19
+        ia.WaitForInputReady (2000)
+        
+        ps.SendKeys client, 5, 19
+        ia.WaitForInputReady (2000)
+        
+        ps.SendKeys date_from, 9, 24
+        ia.WaitForInputReady (2000)
+        ps.SendKeys date_to, 9, 36
+        ia.WaitForInputReady (2000)
+        ps.SendKeys "C", 15, 19
+        ia.WaitForInputReady (2000)
+          ps.SendKeys maildd, 18, 19
+        ia.WaitForInputReady (2000)
+        
+        ps.SendKeys "[enter]"
+        ia.WaitForInputReady (2000)
+        
+        ps.SendKeys "[pf8]"
+        ia.WaitForInputReady (5000)
+        
+        ps.autECLFieldList.Refresh
+        ia.WaitForInputReady (2000)
+        
+        ps.SendKeys "[reset]"
+        ia.WaitForInputReady (2000)
+     
+     i = i + 1
+    Wend
+    
+    
+    End Sub

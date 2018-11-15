@@ -1,0 +1,33 @@
+'Save an excel file attached to an email into a local dir
+
+Public Sub SaveAttachmentsTo21rp4Desk(item As Outlook.MailItem)
+
+
+Dim object_attachment As Outlook.Attachment
+
+
+Dim saveFolder As String
+
+' Folder location when I want to save my file
+
+saveFolder = "\\path\path\path"
+
+
+    For Each object_attachment In item.Attachments
+
+' Criteria to save .doc files only
+
+    If InStr(object_attachment.DisplayName, ".csv") Then
+
+        object_attachment.SaveAsFile saveFolder & "\" & object_attachment.DisplayName
+
+
+    End If
+
+
+    Next
+
+
+ 
+
+End Sub
